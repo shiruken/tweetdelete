@@ -307,7 +307,7 @@ class tweetdelete:
 
 if __name__ == '__main__':
 
-    token_file = '~/tweetdelete/tokens.json'
+    token_file = '/home/pi/tweetdelete/tokens.json'
     read_default_file = '~/.my.cnf'
     database = 'twitter'
 
