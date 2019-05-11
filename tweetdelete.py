@@ -9,7 +9,7 @@ Stores tweets in MySQL table with the following format:
     `created_at` datetime NOT NULL,
     `kind` tinyint(1) unsigned NOT NULL COMMENT '0=Tweet, 1=Like',
     `favorited` tinyint(1) unsigned DEFAULT NULL COMMENT '1=Liked according to API',
-    `error` tinyint(1) unsigned DEFAULT NULL COMMENT 'Flag tweet as inaccesible via API',
+    `error` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Count number of errors encountered interacting with the tweet',
     PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -86,7 +86,7 @@ class tweetdelete:
 
     def flag_error(self, tweet_id):
         """Flag item as inaccesible via the API in the database"""
-        sql = """UPDATE tweetdelete SET error=1 WHERE id=%s"""
+        sql = """UPDATE tweetdelete SET error = error + 1 WHERE id=%s"""
         if self.run(sql, tweet_id):
             return ' Flagged in database.'
  
@@ -235,11 +235,12 @@ class tweetdelete:
         """Delete tweets more than 3 months old"""
 
         # Get all tweets in database more than 3 months old
+        # Skip tweets with more than 10 errors
         sql = """
               SELECT id FROM tweetdelete
               WHERE
-                kind=0 AND
-                error!=1 AND
+                kind = 0 AND
+                error < 10 AND
                 created_at < DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
               """
         self.c.execute(sql)
@@ -271,13 +272,13 @@ class tweetdelete:
         """Unlike tweets more than 3 months old"""
 
         # Get all likes in database more than 3 months old that are
-        # favorited according to the API
+        # favorited according to the API. Skip tweets with more than 10 errors
         sql = """
               SELECT id FROM tweetdelete
               WHERE
-                kind=1 AND
-                favorited=1 AND
-                error!=1 AND
+                kind = 1 AND
+                favorited = 1 AND
+                error < 10 AND
                 created_at < DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
               """
         self.c.execute(sql)
@@ -316,4 +317,4 @@ if __name__ == '__main__':
     td.add_new_likes()
     td.cull_tweets()
     td.cull_likes()
-    print('\n\n')
+    print('\n')
