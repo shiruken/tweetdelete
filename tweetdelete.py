@@ -241,7 +241,7 @@ class tweetdelete:
               WHERE
                 kind = 0 AND
                 error < 10 AND
-                created_at < DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+                created_at < (NOW() - INTERVAL 3 MONTH)
               """
         self.c.execute(sql)
         tweets = self.c.fetchall()
@@ -279,7 +279,7 @@ class tweetdelete:
                 kind = 1 AND
                 favorited = 1 AND
                 error < 10 AND
-                created_at < DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+                created_at < (NOW() - INTERVAL 3 MONTH)
               """
         self.c.execute(sql)
         likes = self.c.fetchall()

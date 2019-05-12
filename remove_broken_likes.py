@@ -45,7 +45,7 @@ sql = """
         kind=1 AND
         favorited=0 AND
         id >= %s AND
-        created_at < DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+        created_at < (NOW() - INTERVAL 3 MONTH)
       """
 c.execute(sql, start_tweet_id)
 likes = c.fetchall()
