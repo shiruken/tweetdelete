@@ -60,9 +60,24 @@ for like in likes:
     # Only attempt the unliking for users above the follower count threshold
     if followers >= min_followers:
         msg = f'{tweet_id} from {user} ({followers:,}): '
+
+        if not tweet['favorited']:
+            try:
+                twitter.create_favorite(id=tweet_id)
+                msg += 'Liked the status. '
+                try:
+                    c.execute("""UPDATE tweetdelete SET favorited=1 WHERE id=%s""", tweet_id)
+                    db.commit()
+                except Exception as e:
+                    db.rollback()
+                    msg += f'Error updating favorited status in database: {e}'
+            except TwythonRateLimitError:
+                print(f'{msg}POST favorites/create rate limit exceeded. Stopping.')
+                break
+            except Exception as e:
+                msg += f'Error liking {tweet_id}: {e}'
+
         try:
-            twitter.create_favorite(id=tweet_id)
-            msg += 'Liked the status. '
             twitter.destroy_favorite(id=tweet_id)
             msg += 'Unliked the status. '
             count += 1
