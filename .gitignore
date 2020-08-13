@@ -2,4 +2,5 @@
 tokens.json
 *.log
 *.sql
-
+env/
+__pycache__/

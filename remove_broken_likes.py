@@ -35,7 +35,7 @@ start_tweet_id = args.start_tweet_id
 keys = json.load(open('tokens.json'))
 twitter = Twython(**keys)
 
-db = pymysql.connect(read_default_file='~/.raspberry.cnf', database='twitter')
+db = pymysql.connect(read_default_file='~/.my.cnf', database='twitter')
 c = db.cursor()
 
 # Get list of likes that were not 'favorited' according to the API
@@ -97,7 +97,7 @@ for like in likes:
 
     else:
         print(f'{tweet_id} from {user} does not meet the follower threshold ({followers:,})')
-        
+
     time.sleep(1)
 
 print(f'Unliked {count} tweets')

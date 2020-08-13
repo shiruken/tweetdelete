@@ -1,5 +1,3 @@
-#!/home/pi/berryconda3/envs/tweetdelete/bin/python
-
 """
 Delete Twitter activity (tweets + likes) older than 3 months old.
 
@@ -308,7 +306,7 @@ class tweetdelete:
 
 if __name__ == '__main__':
 
-    token_file = '/home/pi/tweetdelete/tokens.json'
+    token_file = 'tokens.json'
     read_default_file = '~/.my.cnf'
     database = 'twitter'
 
