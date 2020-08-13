@@ -4,3 +4,4 @@ tokens.json
 *.sql
 env/
 __pycache__/
+.direnv/
